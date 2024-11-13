@@ -45,6 +45,11 @@ class ApplicationModule(private val context: Context) {
 
     @Provides
     @Singleton
+    fun provideGetCityUseCase(getCityUseCase: GetCityUseCaseImpl): GetCityUseCase =
+        getCityUseCase
+
+    @Provides
+    @Singleton
     fun provideGetCitiesByNameUseCase(getCitiesByNameUseCase: GetCitiesByNameUseCaseImpl): GetCitiesByNameUseCase =
         getCitiesByNameUseCase
 

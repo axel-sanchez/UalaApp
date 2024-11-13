@@ -1,16 +1,11 @@
 package com.example.ualaapp.presentation.view
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -20,9 +15,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,7 +37,8 @@ import com.example.ualaapp.R
 
 @Composable
 fun CitiesScreen(
-    viewModel: CitiesViewModel
+    viewModel: CitiesViewModel,
+    navigateToMapScreen: (Long) -> Unit
 ) {
 
     viewModel.getCities()
@@ -76,7 +70,7 @@ fun CitiesScreen(
             end.linkTo(parent.end)
         }, dataCities)
 
-        ProductList(dataCities, viewModel)
+        ProductList(dataCities, viewModel, navigateToMapScreen)
     }
 }
 
@@ -106,8 +100,7 @@ private fun ErrorState(modifier: Modifier, dataCities: DataCities) {
 }
 
 @Composable
-fun ProductList(dataCities: DataCities, viewModel: CitiesViewModel) {
-    val context = LocalContext.current
+fun ProductList(dataCities: DataCities, viewModel: CitiesViewModel, navigateToMapScreen: (Long) -> Unit) {
     if (!dataCities.cities.isNullOrEmpty()) {
 
         var query by rememberSaveable { mutableStateOf("") }
@@ -149,11 +142,7 @@ fun ProductList(dataCities: DataCities, viewModel: CitiesViewModel) {
                         modifier = Modifier
                             .fillMaxSize()
                             .clickable {
-                                navigateToGoogleMaps(
-                                    context,
-                                    city.coordinates?.lat,
-                                    city.coordinates?.lon
-                                )
+                                navigateToMapScreen(city.id?:0)
                             }) {
                         val (name, coordinates, divider, icon) = createRefs()
                         Text(
@@ -221,20 +210,5 @@ fun ProductList(dataCities: DataCities, viewModel: CitiesViewModel) {
                 }
             }
         }
-    }
-}
-
-fun navigateToGoogleMaps(context: Context, latitude: Double?, longitude: Double?) {
-    try {
-        val uri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude")
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        intent.setPackage("com.google.android.apps.maps")
-
-        if (intent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(intent)
-        }
-    } catch (e: Exception) {
-        Toast.makeText(context, "No se pudo abrir la ubicación en google maps", Toast.LENGTH_SHORT)
-            .show()
     }
 }

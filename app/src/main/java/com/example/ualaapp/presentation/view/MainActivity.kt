@@ -11,10 +11,12 @@ import androidx.compose.ui.Modifier
 import com.example.ualaapp.core.MyApplication
 import com.example.ualaapp.domain.usecase.GetAllCitiesUseCase
 import com.example.ualaapp.domain.usecase.GetCitiesByNameUseCase
+import com.example.ualaapp.domain.usecase.GetCityUseCase
 import com.example.ualaapp.domain.usecase.UpdateCityUseCase
 import com.example.ualaapp.navigation.NavigationHost
 import com.example.ualaapp.presentation.ui.theme.UalaAppTheme
 import com.example.ualaapp.presentation.viewmodel.CitiesViewModel
+import com.example.ualaapp.presentation.viewmodel.MapViewModel
 import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
@@ -28,8 +30,15 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var updateCityUseCase: UpdateCityUseCase
 
+    @Inject
+    lateinit var getCityUseCase: GetCityUseCase
+
     private val citiesViewModel: CitiesViewModel by viewModels(
         factoryProducer = { CitiesViewModel.CitiesViewModelFactory(getAllCitiesUseCase, getCitiesByNameUseCase, updateCityUseCase) }
+    )
+
+    private val mapViewModel: MapViewModel by viewModels(
+        factoryProducer = { MapViewModel.MapViewModelFactory(getCityUseCase) }
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    NavigationHost(citiesViewModel)
+                    NavigationHost(citiesViewModel, mapViewModel)
                 }
             }
         }

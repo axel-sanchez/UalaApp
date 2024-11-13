@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace 'com.example.ualaapp'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.ualaapp"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -119,6 +119,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    //Coil
-    implementation "io.coil-kt:coil-compose:1.4.0"
+    //Maps
+    implementation 'com.google.maps.android:maps-compose:2.4.0' // Dependencia de mapas en Compose
+    implementation 'com.google.android.gms:play-services-maps:18.0.0'
 }

@@ -6,6 +6,7 @@ object Constants {
 
     //Endpoints
     const val GET_CITIES = "cities.json"
+    const val ID_CITY = "idCity"
 
     enum class ApiError(var error: String) {
         GENERIC("Hubo un error al obtener las ciudades"),
