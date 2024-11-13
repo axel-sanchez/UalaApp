@@ -13,4 +13,6 @@ sealed class Destinations(
     object MapScreen: Destinations("mapScreen/{$ID_CITY}"){
         fun createRoute(idCity: Long) = "mapScreen/$idCity"
     }
+
+    object FavScreen: Destinations("favScreen")
 }

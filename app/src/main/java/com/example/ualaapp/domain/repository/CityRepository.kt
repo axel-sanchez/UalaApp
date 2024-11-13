@@ -8,6 +8,7 @@ import com.example.ualaapp.data.models.DataCities
  */
 interface CityRepository {
     suspend fun getCities(): DataCities
+    suspend fun getFavCities(): List<City>
     suspend fun getCity(idCity: Long): City
     suspend fun getCitiesByName(name: String): DataCities
     suspend fun getLocalCities(): List<City>

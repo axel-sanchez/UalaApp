@@ -33,6 +33,10 @@ class CityRepositoryImpl @Inject constructor(
         return remoteDataCities
     }
 
+    override suspend fun getFavCities(): List<City> {
+        return cityLocalSource.getFavCities()
+    }
+
     override suspend fun getCity(idCity: Long): City {
         return cityLocalSource.getCity(idCity)
     }

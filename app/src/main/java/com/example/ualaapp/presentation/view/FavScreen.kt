@@ -8,14 +8,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -25,50 +25,43 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.example.ualaapp.data.models.DataCities
-import com.example.ualaapp.helpers.Constants
-import com.example.ualaapp.presentation.viewmodel.CitiesViewModel
 import com.example.ualaapp.R
+import com.example.ualaapp.data.models.City
+import com.example.ualaapp.helpers.Constants
+import com.example.ualaapp.presentation.viewmodel.FavViewModel
 
 /**
  * @author Axel Sanchez
  */
-
 @Composable
-fun CitiesScreen(
-    viewModel: CitiesViewModel,
-    navigateToMapScreen: (Long) -> Unit,
-    navigateToFavScreen: () -> Unit
+fun FavScreen(
+    favViewModel: FavViewModel,
+    onBackPressed: () -> Unit,
+    navigateToMapScreen: (Long) -> Unit
 ) {
+    favViewModel.getFavCities()
+    val favCities: List<City>? by favViewModel.getFavCitiesLiveData()
+        .observeAsState(initial = null)
 
-    viewModel.getCities()
-    val dataCities: DataCities by viewModel.getCitiesLiveData()
-        .observeAsState(initial = DataCities())
-
-    DisposableEffect(dataCities) {
+    DisposableEffect(favCities) {
         onDispose {
-            viewModel.reset()
+            favViewModel.reset()
         }
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        stringResource(R.string.app_name),
-                        color = Color.White
-                    )
-                },
+                title = { Text(stringResource(R.string.fav_cities), color = Color.White) },  // Título del Toolbar
                 backgroundColor = Color.Black,
-                actions = {
+                navigationIcon = {
                     IconButton(onClick = {
-                        navigateToFavScreen()
+                        onBackPressed()
                     }) {
                         Icon(
-                            imageVector = Icons.Filled.ThumbUp,
-                            contentDescription = "Favorites",
-                            tint = Color.Blue
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White
                         )
                     }
                 }
@@ -86,24 +79,24 @@ fun CitiesScreen(
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                }, dataCities)
+                }, favCities)
 
                 Loading(modifier = Modifier.constrainAs(loading) {
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                }, dataCities)
+                }, favCities)
 
-                ProductList(dataCities, navigateToMapScreen)
+                ProductList(favCities, navigateToMapScreen)
             }
         }
     )
 }
 
 @Composable
-private fun Loading(modifier: Modifier, dataCities: DataCities) {
-    if (dataCities.cities == null) {
+private fun Loading(modifier: Modifier, favCities: List<City>?) {
+    if (favCities == null) {
         Box(
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -114,24 +107,18 @@ private fun Loading(modifier: Modifier, dataCities: DataCities) {
 }
 
 @Composable
-private fun ErrorState(modifier: Modifier, dataCities: DataCities) {
-    dataCities.cities?.let { products ->
-        if (products.isEmpty()) {
-            ErrorCard(Constants.ApiError.EMPTY_CITIES.error, modifier)
-        }
-    } ?: run {
-        dataCities.apiError?.let {
-            ErrorCard(it.error, modifier)
-        }
+private fun ErrorState(modifier: Modifier, favCities: List<City>?) {
+    if (favCities?.isEmpty() == true) {
+        ErrorCard(Constants.ApiError.EMPTY_CITIES.error, modifier)
     }
 }
 
 @Composable
 fun ProductList(
-    dataCities: DataCities,
+    favCities: List<City>?,
     navigateToMapScreen: (Long) -> Unit
 ) {
-    if (!dataCities.cities.isNullOrEmpty()) {
+    if (!favCities.isNullOrEmpty()) {
 
         var query by rememberSaveable { mutableStateOf("") }
 
@@ -165,9 +152,7 @@ fun ProductList(
             )
 
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                itemsIndexed(dataCities.cities.filter {
-                    it.name?.contains(query, ignoreCase = true) ?: false
-                }) { index, city ->
+                itemsIndexed(favCities) { index, city ->
                     ConstraintLayout(
                         modifier = Modifier
                             .fillMaxSize()
@@ -204,7 +189,7 @@ fun ProductList(
                             fontSize = 18.sp
                         )
 
-                        if (index != dataCities.cities.size - 1) {
+                        if (index != favCities.size - 1) {
                             Divider(
                                 modifier = Modifier.constrainAs(divider) {
                                     top.linkTo(coordinates.bottom)

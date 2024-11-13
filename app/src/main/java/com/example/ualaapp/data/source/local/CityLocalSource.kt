@@ -13,6 +13,7 @@ import javax.inject.Singleton
 interface CityLocalSource {
     suspend fun getCitiesByName(name: String): List<City>
     suspend fun getAllCities(): List<City>
+    suspend fun getFavCities(): List<City>
     suspend fun getCity(idCity: Long): City
     suspend fun insertCity(city: City)
     suspend fun updateCity(city: City)
@@ -29,6 +30,10 @@ class CityLocalSourceImpl @Inject constructor(private val database: CityDao):
 
     override suspend fun getAllCities(): List<City> {
         return database.getCities()
+    }
+
+    override suspend fun getFavCities(): List<City> {
+        return database.getFavCities()
     }
 
     override suspend fun getCity(idCity: Long): City {

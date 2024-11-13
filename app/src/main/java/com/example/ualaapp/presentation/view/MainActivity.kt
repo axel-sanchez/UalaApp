@@ -9,13 +9,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.example.ualaapp.core.MyApplication
-import com.example.ualaapp.domain.usecase.GetAllCitiesUseCase
-import com.example.ualaapp.domain.usecase.GetCitiesByNameUseCase
-import com.example.ualaapp.domain.usecase.GetCityUseCase
-import com.example.ualaapp.domain.usecase.UpdateCityUseCase
+import com.example.ualaapp.domain.usecase.*
 import com.example.ualaapp.navigation.NavigationHost
 import com.example.ualaapp.presentation.ui.theme.UalaAppTheme
 import com.example.ualaapp.presentation.viewmodel.CitiesViewModel
+import com.example.ualaapp.presentation.viewmodel.FavViewModel
 import com.example.ualaapp.presentation.viewmodel.MapViewModel
 import javax.inject.Inject
 
@@ -23,6 +21,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var getAllCitiesUseCase: GetAllCitiesUseCase
+
+    @Inject
+    lateinit var getFavCitiesUseCase: GetFavCitiesUseCase
 
     @Inject
     lateinit var updateCityUseCase: UpdateCityUseCase
@@ -38,6 +39,10 @@ class MainActivity : ComponentActivity() {
         factoryProducer = { MapViewModel.MapViewModelFactory(getCityUseCase, updateCityUseCase) }
     )
 
+    private val favViewModel: FavViewModel by viewModels(
+        factoryProducer = { FavViewModel.FavViewModelFactory(getFavCitiesUseCase) }
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (application as MyApplication).component.inject(this)
@@ -48,7 +53,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    NavigationHost(citiesViewModel, mapViewModel)
+                    NavigationHost(citiesViewModel, mapViewModel, favViewModel)
                 }
             }
         }
