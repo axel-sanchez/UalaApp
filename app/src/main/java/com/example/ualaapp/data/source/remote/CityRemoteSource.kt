@@ -7,6 +7,7 @@ import com.example.ualaapp.data.models.DataCities
 import com.example.ualaapp.data.service.ApiServiceCity
 import com.example.ualaapp.helpers.Constants.ApiError.*
 import com.example.ualaapp.helpers.NetworkHelper
+import com.example.ualaapp.helpers.sortAlphabetically
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -56,11 +57,5 @@ class CityRemoteSourceImpl @Inject constructor(private val service: ApiServiceCi
         }
 
         return mutableLiveData
-    }
-
-    fun sortAlphabetically(list: List<City>): List<City>{
-        return list.sortedBy {
-            it.name
-        }
     }
 }

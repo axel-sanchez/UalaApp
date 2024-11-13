@@ -1,7 +1,6 @@
 package com.example.ualaapp.data.source.local
 
 import android.util.Log
-import android.widget.Toast
 import com.example.ualaapp.data.room.CityDao
 import com.example.ualaapp.data.models.City
 import javax.inject.Inject

@@ -2,7 +2,6 @@ package com.example.ualaapp.presentation.viewmodel
 
 import androidx.lifecycle.*
 import com.example.ualaapp.data.models.City
-import com.example.ualaapp.data.models.DataCities
 import com.example.ualaapp.domain.usecase.GetCityUseCase
 import com.example.ualaapp.domain.usecase.UpdateCityUseCase
 import kotlinx.coroutines.Dispatchers

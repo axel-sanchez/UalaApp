@@ -15,7 +15,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -29,6 +28,7 @@ import com.example.ualaapp.data.models.DataCities
 import com.example.ualaapp.helpers.Constants
 import com.example.ualaapp.presentation.viewmodel.CitiesViewModel
 import com.example.ualaapp.R
+import com.example.ualaapp.helpers.filterListByName
 
 /**
  * @author Axel Sanchez
@@ -165,9 +165,7 @@ fun ProductList(
             )
 
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                itemsIndexed(dataCities.cities.filter {
-                    it.name?.contains(query, ignoreCase = true) ?: false
-                }) { index, city ->
+                itemsIndexed(filterListByName(dataCities.cities, query)) { index, city ->
                     ConstraintLayout(
                         modifier = Modifier
                             .fillMaxSize()

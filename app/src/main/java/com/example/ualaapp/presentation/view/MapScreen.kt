@@ -12,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.ualaapp.R
 import com.example.ualaapp.data.models.City
 import com.example.ualaapp.presentation.viewmodel.MapViewModel
 import com.google.android.gms.maps.model.CameraPosition

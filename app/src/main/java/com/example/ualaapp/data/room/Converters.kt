@@ -5,7 +5,6 @@ import com.example.ualaapp.data.models.City
 import com.example.ualaapp.data.models.Coordinates
 import com.google.gson.Gson
 
-private const val nullStr = "null"
 /**
  * @author Axel Sanchez
  */
