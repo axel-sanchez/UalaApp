@@ -1,5 +1,6 @@
 package com.example.ualaapp.presentation.view
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -28,7 +30,11 @@ import com.example.ualaapp.data.models.DataCities
 import com.example.ualaapp.helpers.Constants
 import com.example.ualaapp.presentation.viewmodel.CitiesViewModel
 import com.example.ualaapp.R
+import com.example.ualaapp.data.models.City
 import com.example.ualaapp.helpers.filterListByName
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
 
 /**
  * @author Axel Sanchez
@@ -44,6 +50,8 @@ fun CitiesScreen(
     viewModel.getCities()
     val dataCities: DataCities by viewModel.getCitiesLiveData()
         .observeAsState(initial = DataCities())
+
+    val cityToShow: MutableState<City?> = remember { mutableStateOf(null) }
 
     DisposableEffect(dataCities) {
         onDispose {
@@ -75,27 +83,110 @@ fun CitiesScreen(
             )
         },
         content = { paddingValues ->
-            ConstraintLayout(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-            ) {
-                val (emptyState, loading) = createRefs()
 
-                ErrorState(modifier = Modifier.constrainAs(emptyState) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }, dataCities)
+            val config = LocalConfiguration.current
+            val portraitMode = remember { mutableStateOf(config.orientation) }
 
-                Loading(modifier = Modifier.constrainAs(loading) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }, dataCities)
+            if (portraitMode.value == Configuration.ORIENTATION_PORTRAIT) {
+                ConstraintLayout(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize()
+                ) {
+                    val (emptyState, loading) = createRefs()
 
-                ProductList(dataCities, navigateToMapScreen)
+                    ErrorState(modifier = Modifier.constrainAs(emptyState) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }, dataCities)
+
+                    Loading(modifier = Modifier.constrainAs(loading) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }, dataCities)
+
+                    ProductList(dataCities, navigateToMapScreen, Modifier.fillMaxSize())
+                }
+            } else {
+                ConstraintLayout(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize()
+                ) {
+                    val (emptyState, loading, row) = createRefs()
+
+                    ErrorState(modifier = Modifier.constrainAs(emptyState) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }, dataCities)
+
+                    Loading(modifier = Modifier.constrainAs(loading) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }, dataCities)
+
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        ProductList(
+                            dataCities,
+                            navigateToMapScreen = { id ->
+                                if(portraitMode.value == Configuration.ORIENTATION_PORTRAIT){
+                                    navigateToMapScreen(id)
+                                } else{
+                                    cityToShow.value = dataCities.cities?.find { it.id == id }
+                                }
+                            },
+                            Modifier
+                                .fillMaxHeight()
+                                .weight(1f)
+                                .padding(16.dp)
+                        )
+
+                        if (!dataCities.cities.isNullOrEmpty()) {
+                            val cameraPositionState = rememberCameraPositionState {
+                                position = CameraPosition.fromLatLngZoom(
+                                    LatLng(
+                                        cityToShow.value?.coordinates?.lat ?: 0.0,
+                                        cityToShow.value?.coordinates?.lon ?: 0.0
+                                    ), -300f
+                                )
+                            }
+
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxHeight()  // Ocupa todo el alto disponible
+                                    .weight(1f)  // Ocupa la otra mitad de la pantalla
+                                    .padding(16.dp)
+                            ) {
+                                // Mapa de la ciudad
+                                GoogleMap(
+                                    cameraPositionState = cameraPositionState,
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    Marker(
+                                        state = MarkerState(
+                                            position = LatLng(
+                                                cityToShow.value?.coordinates?.lat ?: dataCities.cities?.first()?.coordinates?.lat?:0.0,
+                                                cityToShow.value?.coordinates?.lon ?: dataCities.cities?.first()?.coordinates?.lon?:0.0
+                                            )
+                                        ),
+                                        title = cityToShow.value?.name
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                }
             }
         }
     )
@@ -129,13 +220,14 @@ private fun ErrorState(modifier: Modifier, dataCities: DataCities) {
 @Composable
 fun ProductList(
     dataCities: DataCities,
-    navigateToMapScreen: (Long) -> Unit
+    navigateToMapScreen: (Long) -> Unit,
+    modifier: Modifier
 ) {
     if (!dataCities.cities.isNullOrEmpty()) {
 
         var query by rememberSaveable { mutableStateOf("") }
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = modifier) {
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
