@@ -25,20 +25,17 @@ class MainActivity : ComponentActivity() {
     lateinit var getAllCitiesUseCase: GetAllCitiesUseCase
 
     @Inject
-    lateinit var getCitiesByNameUseCase: GetCitiesByNameUseCase
-
-    @Inject
     lateinit var updateCityUseCase: UpdateCityUseCase
 
     @Inject
     lateinit var getCityUseCase: GetCityUseCase
 
     private val citiesViewModel: CitiesViewModel by viewModels(
-        factoryProducer = { CitiesViewModel.CitiesViewModelFactory(getAllCitiesUseCase, getCitiesByNameUseCase, updateCityUseCase) }
+        factoryProducer = { CitiesViewModel.CitiesViewModelFactory(getAllCitiesUseCase) }
     )
 
     private val mapViewModel: MapViewModel by viewModels(
-        factoryProducer = { MapViewModel.MapViewModelFactory(getCityUseCase) }
+        factoryProducer = { MapViewModel.MapViewModelFactory(getCityUseCase, updateCityUseCase) }
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

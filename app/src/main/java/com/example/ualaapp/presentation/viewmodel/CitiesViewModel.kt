@@ -1,11 +1,8 @@
 package com.example.ualaapp.presentation.viewmodel
 
 import androidx.lifecycle.*
-import com.example.ualaapp.data.models.City
 import com.example.ualaapp.data.models.DataCities
 import com.example.ualaapp.domain.usecase.GetAllCitiesUseCase
-import com.example.ualaapp.domain.usecase.GetCitiesByNameUseCase
-import com.example.ualaapp.domain.usecase.UpdateCityUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -13,10 +10,7 @@ import kotlinx.coroutines.launch
  * @author Axel Sanchez
  */
 class CitiesViewModel(
-    private val getAllCitiesUseCase: GetAllCitiesUseCase,
-    private val getCitiesByNameUseCase: GetCitiesByNameUseCase,
-    private val updateCityUseCase: UpdateCityUseCase
-): ViewModel() {
+    private val getAllCitiesUseCase: GetAllCitiesUseCase): ViewModel() {
 
     private var listData: MutableLiveData<DataCities> =
         MutableLiveData<DataCities>()
@@ -35,30 +29,16 @@ class CitiesViewModel(
         }
     }
 
-    fun filterByName(name: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            setListData(getCitiesByNameUseCase.call(name))
-        }
-    }
-
-    fun updateCity(city: City){
-        viewModelScope.launch(Dispatchers.IO) {
-            updateCityUseCase.call(city)
-        }
-    }
-
     fun getCitiesLiveData(): LiveData<DataCities> {
         return listData
     }
 
     class CitiesViewModelFactory(
-        private val getAllCitiesUseCase: GetAllCitiesUseCase,
-        private val getCitiesByNameUseCase: GetCitiesByNameUseCase,
-        private val updateCityUseCase: UpdateCityUseCase
+        private val getAllCitiesUseCase: GetAllCitiesUseCase
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return modelClass.getConstructor(GetAllCitiesUseCase::class.java, GetCitiesByNameUseCase::class.java, UpdateCityUseCase::class.java)
-                .newInstance(getAllCitiesUseCase, getCitiesByNameUseCase, updateCityUseCase)
+            return modelClass.getConstructor(GetAllCitiesUseCase::class.java)
+                .newInstance(getAllCitiesUseCase)
         }
     }
 }

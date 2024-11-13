@@ -144,7 +144,7 @@ fun ProductList(dataCities: DataCities, viewModel: CitiesViewModel, navigateToMa
                             .clickable {
                                 navigateToMapScreen(city.id?:0)
                             }) {
-                        val (name, coordinates, divider, icon) = createRefs()
+                        val (name, coordinates, divider) = createRefs()
                         Text(
                             modifier = Modifier
                                 .constrainAs(name) {
@@ -172,29 +172,6 @@ fun ProductList(dataCities: DataCities, viewModel: CitiesViewModel, navigateToMa
                             text = "${city.coordinates?.lat}, ${city.coordinates?.lon}",
                             softWrap = true,
                             fontSize = 18.sp
-                        )
-
-                        var isFav by remember { mutableStateOf(city.fav?:false) }
-
-                        val imageResource = if (isFav) R.drawable.ic_fav
-                        else R.drawable.ic_nofav
-
-                        Image(
-                            painter = painterResource(id = imageResource),
-                            contentDescription = "Descripción de la imagen",
-                            modifier = Modifier
-                                .constrainAs(icon) {
-                                    top.linkTo(name.top)
-                                    bottom.linkTo(coordinates.bottom)
-                                    end.linkTo(parent.end)
-                                }
-                                .padding(end = 20.dp)
-                                .clickable {
-                                    isFav = !isFav
-                                    city.fav = isFav
-                                    viewModel.updateCity(city)
-
-                                }
                         )
 
                         if (index != dataCities.cities.size - 1) {

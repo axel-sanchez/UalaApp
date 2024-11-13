@@ -28,7 +28,10 @@ fun NavigationHost(citiesViewModel: CitiesViewModel, mapViewModel: MapViewModel)
 
         composable(MapScreen.route){ navBackStackEntry ->
             val idCity = navBackStackEntry.arguments?.getString(ID_CITY)?:""
-            MapScreen(idCity.toLong(), mapViewModel)
+            MapScreen(
+                idCity.toLong(),
+                mapViewModel
+            ){ navController.popBackStack() }
         }
     }
 }
