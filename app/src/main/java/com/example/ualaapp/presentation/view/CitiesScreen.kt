@@ -9,13 +9,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,27 +52,45 @@ fun CitiesScreen(
         }
     }
 
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        val (emptyState, loading) = createRefs()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(LocalContext.current.getString(R.string.app_name), color = Color.White) },
+                backgroundColor = Color.Black,
+                actions = {
+                    IconButton(onClick = {
 
-        ErrorState(modifier = Modifier.constrainAs(emptyState) {
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-        }, dataCities)
+                    }) {
+                        Icon(imageVector = Icons.Filled.ThumbUp, contentDescription = "Favorites", tint = Color.Blue)
+                    }
+                }
+            )
+        },
+        content = { paddingValues ->
+            ConstraintLayout(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+            ) {
+                val (emptyState, loading) = createRefs()
 
-        Loading(modifier = Modifier.constrainAs(loading) {
-            top.linkTo(parent.top)
-            bottom.linkTo(parent.bottom)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-        }, dataCities)
+                ErrorState(modifier = Modifier.constrainAs(emptyState) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }, dataCities)
 
-        ProductList(dataCities, viewModel, navigateToMapScreen)
-    }
+                Loading(modifier = Modifier.constrainAs(loading) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }, dataCities)
+
+                ProductList(dataCities, navigateToMapScreen)
+            }
+        }
+    )
 }
 
 @Composable
@@ -100,7 +119,10 @@ private fun ErrorState(modifier: Modifier, dataCities: DataCities) {
 }
 
 @Composable
-fun ProductList(dataCities: DataCities, viewModel: CitiesViewModel, navigateToMapScreen: (Long) -> Unit) {
+fun ProductList(
+    dataCities: DataCities,
+    navigateToMapScreen: (Long) -> Unit
+) {
     if (!dataCities.cities.isNullOrEmpty()) {
 
         var query by rememberSaveable { mutableStateOf("") }
@@ -136,13 +158,13 @@ fun ProductList(dataCities: DataCities, viewModel: CitiesViewModel, navigateToMa
 
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 itemsIndexed(dataCities.cities.filter {
-                    it.name?.contains(query, ignoreCase = true)?:false
+                    it.name?.contains(query, ignoreCase = true) ?: false
                 }) { index, city ->
                     ConstraintLayout(
                         modifier = Modifier
                             .fillMaxSize()
                             .clickable {
-                                navigateToMapScreen(city.id?:0)
+                                navigateToMapScreen(city.id ?: 0)
                             }) {
                         val (name, coordinates, divider) = createRefs()
                         Text(

@@ -43,12 +43,13 @@ fun MapScreen(idCity: Long, mapViewModel: MapViewModel, onBackPressed: () -> Uni
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(city.name ?:"") },  // Título del Toolbar
+                    title = { Text(city.name ?:"", color = Color.White) },  // Título del Toolbar
+                    backgroundColor = Color.Black,
                     navigationIcon = {
                         IconButton(onClick = {
                             onBackPressed()
                         }) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
                         }
                     },
                     actions = {
@@ -64,7 +65,7 @@ fun MapScreen(idCity: Long, mapViewModel: MapViewModel, onBackPressed: () -> Uni
                             mapViewModel.updateCity(city)
                         }) {
                             if(city.fav == true) Icon(imageResource, contentDescription = "Favorites", tint = Color.Red)
-                            else Icon(imageResource, contentDescription = "Favorites")
+                            else Icon(imageResource, contentDescription = "Favorites", tint = Color.White)
                         }
                     }
                 )
