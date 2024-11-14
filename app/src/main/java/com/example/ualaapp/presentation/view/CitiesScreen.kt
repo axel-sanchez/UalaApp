@@ -116,7 +116,7 @@ fun CitiesScreen(
                         .padding(paddingValues)
                         .fillMaxSize()
                 ) {
-                    val (emptyState, loading, row) = createRefs()
+                    val (emptyState, loading) = createRefs()
 
                     ErrorState(modifier = Modifier.constrainAs(emptyState) {
                         top.linkTo(parent.top)
@@ -131,7 +131,6 @@ fun CitiesScreen(
                         end.linkTo(parent.end)
                     }, dataCities)
 
-
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
@@ -139,9 +138,9 @@ fun CitiesScreen(
                         ProductList(
                             dataCities,
                             navigateToMapScreen = { id ->
-                                if(portraitMode.value == Configuration.ORIENTATION_PORTRAIT){
+                                if (portraitMode.value == Configuration.ORIENTATION_PORTRAIT) {
                                     navigateToMapScreen(id)
-                                } else{
+                                } else {
                                     cityToShow.value = dataCities.cities?.find { it.id == id }
                                 }
                             },
@@ -157,7 +156,7 @@ fun CitiesScreen(
                                     LatLng(
                                         cityToShow.value?.coordinates?.lat ?: 0.0,
                                         cityToShow.value?.coordinates?.lon ?: 0.0
-                                    ), -300f
+                                    ), 0f
                                 )
                             }
 
@@ -175,8 +174,12 @@ fun CitiesScreen(
                                     Marker(
                                         state = MarkerState(
                                             position = LatLng(
-                                                cityToShow.value?.coordinates?.lat ?: dataCities.cities?.first()?.coordinates?.lat?:0.0,
-                                                cityToShow.value?.coordinates?.lon ?: dataCities.cities?.first()?.coordinates?.lon?:0.0
+                                                cityToShow.value?.coordinates?.lat
+                                                    ?: dataCities.cities?.first()?.coordinates?.lat
+                                                    ?: 0.0,
+                                                cityToShow.value?.coordinates?.lon
+                                                    ?: dataCities.cities?.first()?.coordinates?.lon
+                                                    ?: 0.0
                                             )
                                         ),
                                         title = cityToShow.value?.name
@@ -257,44 +260,49 @@ fun ProductList(
             )
 
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                itemsIndexed(filterListByName(dataCities.cities, query)) { index, city ->
-                    ConstraintLayout(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clickable {
-                                navigateToMapScreen(city.id ?: 0)
-                            }) {
-                        val (name, coordinates, divider) = createRefs()
-                        Text(
+                val filterCities = filterListByName(dataCities.cities, query)
+                if (filterCities.isEmpty()) {
+                    item {
+                        ErrorCard(Constants.ApiError.EMPTY_CITIES.error, Modifier.fillMaxWidth())
+                    }
+                } else {
+                    itemsIndexed(filterCities) { index, city ->
+                        ConstraintLayout(
                             modifier = Modifier
-                                .constrainAs(name) {
-                                    top.linkTo(parent.top)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                    width = Dimension.fillToConstraints
-                                }
-                                .padding(top = 20.dp),
-                            textAlign = TextAlign.Center,
-                            text = "${city.name}, ${city.country}",
-                            fontSize = 25.sp,
-                            softWrap = true
-                        )
-                        Text(
-                            modifier = Modifier
-                                .constrainAs(coordinates) {
-                                    top.linkTo(name.bottom)
-                                    start.linkTo(parent.start)
-                                    end.linkTo(parent.end)
-                                    width = Dimension.fillToConstraints
-                                }
-                                .padding(top = 10.dp, bottom = 20.dp),
-                            textAlign = TextAlign.Center,
-                            text = "${city.coordinates?.lat}, ${city.coordinates?.lon}",
-                            softWrap = true,
-                            fontSize = 18.sp
-                        )
+                                .fillMaxSize()
+                                .clickable {
+                                    navigateToMapScreen(city.id ?: 0)
+                                }) {
+                            val (name, coordinates, divider) = createRefs()
+                            Text(
+                                modifier = Modifier
+                                    .constrainAs(name) {
+                                        top.linkTo(parent.top)
+                                        start.linkTo(parent.start)
+                                        end.linkTo(parent.end)
+                                        width = Dimension.fillToConstraints
+                                    }
+                                    .padding(top = 20.dp),
+                                textAlign = TextAlign.Center,
+                                text = "${city.name}, ${city.country}",
+                                fontSize = 25.sp,
+                                softWrap = true
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .constrainAs(coordinates) {
+                                        top.linkTo(name.bottom)
+                                        start.linkTo(parent.start)
+                                        end.linkTo(parent.end)
+                                        width = Dimension.fillToConstraints
+                                    }
+                                    .padding(top = 10.dp, bottom = 20.dp),
+                                textAlign = TextAlign.Center,
+                                text = "${city.coordinates?.lat}, ${city.coordinates?.lon}",
+                                softWrap = true,
+                                fontSize = 18.sp
+                            )
 
-                        if (index != dataCities.cities.size - 1) {
                             Divider(
                                 modifier = Modifier.constrainAs(divider) {
                                     top.linkTo(coordinates.bottom)

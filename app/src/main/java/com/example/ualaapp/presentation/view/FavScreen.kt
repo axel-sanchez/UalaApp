@@ -46,7 +46,12 @@ fun FavScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.fav_cities), color = Color.White) },  // Título del Toolbar
+                title = {
+                    Text(
+                        stringResource(R.string.fav_cities),
+                        color = Color.White
+                    )
+                },  // Título del Toolbar
                 backgroundColor = Color.Black,
                 navigationIcon = {
                     IconButton(onClick = {
@@ -151,15 +156,13 @@ fun ProductList(
                         fontSize = 18.sp
                     )
 
-                    if (index != favCities.size - 1) {
-                        Divider(
-                            modifier = Modifier.constrainAs(divider) {
-                                top.linkTo(coordinates.bottom)
-                            },
-                            color = colorResource(id = R.color.separator_gray),
-                            thickness = 1.dp
-                        )
-                    }
+                    Divider(
+                        modifier = Modifier.constrainAs(divider) {
+                            top.linkTo(coordinates.bottom)
+                        },
+                        color = colorResource(id = R.color.separator_gray),
+                        thickness = 1.dp
+                    )
                 }
             }
         }
