@@ -15,7 +15,7 @@ class CitiesViewModel(
     private var listData: MutableLiveData<DataCities> =
         MutableLiveData<DataCities>()
 
-    fun setListData(result: DataCities) {
+    private fun setListData(result: DataCities) {
         listData.postValue(result)
     }
 

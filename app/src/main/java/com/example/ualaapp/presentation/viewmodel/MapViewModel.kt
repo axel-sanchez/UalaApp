@@ -17,7 +17,7 @@ class MapViewModel(
     private var cityData: MutableLiveData<City> =
         MutableLiveData<City>()
 
-    fun setListData(result: City) {
+    private fun setListData(result: City) {
         cityData.postValue(result)
     }
 

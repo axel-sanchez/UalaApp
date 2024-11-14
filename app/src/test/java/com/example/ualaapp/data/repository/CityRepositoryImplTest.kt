@@ -19,7 +19,7 @@ internal class CityRepositoryImplTest{
     private val cityRepository: CityRepository = CityRepositoryImpl(cityRemoteSource, cityLocalSource)
 
     @Test
-    fun should_calls_to_getRemoteProducts_when_there_are_not_local_products(){
+    fun should_calls_to_getRemoteCities_when_there_are_not_local_cities(){
         runBlocking {
             val mutableListData = MutableLiveData(repo.getRemoteCities())
             BDDMockito.given(cityRemoteSource.getCities()).willReturn(mutableListData)
@@ -30,7 +30,7 @@ internal class CityRepositoryImplTest{
     }
 
     @Test
-    fun should_not_calls_to_getRemoteProducts_when_there_are_local_products(){
+    fun should_not_calls_to_getRemoteCities_when_there_are_local_cities(){
         runBlocking {
             BDDMockito.given(cityRepository.getLocalCities()).willReturn(listOf(repo.city1))
             cityRepository.getCities()

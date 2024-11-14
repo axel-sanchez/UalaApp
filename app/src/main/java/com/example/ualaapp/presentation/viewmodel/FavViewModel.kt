@@ -16,7 +16,7 @@ class FavViewModel(
     private var listData: MutableLiveData<List<City>> =
         MutableLiveData<List<City>>()
 
-    fun setListData(result: List<City>) {
+    private fun setListData(result: List<City>) {
         listData.postValue(result)
     }
 
