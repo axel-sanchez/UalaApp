@@ -41,12 +41,6 @@ class CityRepositoryImpl @Inject constructor(
         return cityLocalSource.getCity(idCity)
     }
 
-    override suspend fun getCitiesByName(name: String): DataCities {
-        val result = cityLocalSource.getCitiesByName(name)
-        return if (result.isEmpty()) DataCities(apiError = EMPTY_CITIES)
-        else DataCities(cities = result)
-    }
-
     override suspend fun getLocalCities(): List<City> {
         return cityLocalSource.getAllCities()
     }

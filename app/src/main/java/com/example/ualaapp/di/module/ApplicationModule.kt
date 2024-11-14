@@ -3,6 +3,7 @@ package com.example.ualaapp.di.module
 import android.content.Context
 import androidx.room.Room
 import com.example.ualaapp.data.repository.CityRepositoryImpl
+import com.example.ualaapp.data.repository.FakeRepository
 import com.example.ualaapp.data.room.Database
 import com.example.ualaapp.data.service.ApiClient
 import com.example.ualaapp.data.service.ApiServiceCity
@@ -14,6 +15,7 @@ import com.example.ualaapp.domain.repository.CityRepository
 import com.example.ualaapp.domain.usecase.*
 import com.example.ualaapp.helpers.Constants.BASE_URL
 import com.example.ualaapp.helpers.NetworkHelper
+import com.example.ualaapp.helpers.isRunningTest
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -29,8 +31,8 @@ class ApplicationModule(private val context: Context) {
         cityLocalSource: CityLocalSource,
         cityRemoteSource: CityRemoteSource
     ): CityRepository {
-        return /*if (isRunningTest) FakeRepository()
-        else*/ CityRepositoryImpl(cityRemoteSource, cityLocalSource)
+        return if (isRunningTest()) FakeRepository()
+        else CityRepositoryImpl(cityRemoteSource, cityLocalSource)
     }
 
     @Provides

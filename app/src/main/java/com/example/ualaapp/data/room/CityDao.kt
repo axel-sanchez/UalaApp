@@ -8,8 +8,6 @@ import com.example.ualaapp.data.models.City
  */
 @Dao
 interface CityDao {
-    @Query("SELECT * FROM City WHERE name LIKE :name ORDER BY name ASC")
-    suspend fun getCitiesByName(name: String): List<City>
 
     @Query("SELECT * FROM City ORDER BY name ASC")
     suspend fun getCities(): List<City>
