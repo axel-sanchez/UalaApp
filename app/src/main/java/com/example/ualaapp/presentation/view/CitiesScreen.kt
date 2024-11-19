@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -31,6 +32,10 @@ import com.example.ualaapp.helpers.Constants
 import com.example.ualaapp.presentation.viewmodel.CitiesViewModel
 import com.example.ualaapp.R
 import com.example.ualaapp.data.models.City
+import com.example.ualaapp.helpers.Constants.TEST_APP_NAME
+import com.example.ualaapp.helpers.Constants.TEST_CITY_LIST
+import com.example.ualaapp.helpers.Constants.TEST_ICON_FAV
+import com.example.ualaapp.helpers.Constants.TEST_SEARCHER
 import com.example.ualaapp.helpers.filterListByName
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -61,26 +66,7 @@ fun CitiesScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        stringResource(R.string.app_name),
-                        color = Color.White
-                    )
-                },
-                backgroundColor = Color.Black,
-                actions = {
-                    IconButton(onClick = {
-                        navigateToFavScreen()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.ThumbUp,
-                            contentDescription = "Favorites",
-                            tint = Color.Blue
-                        )
-                    }
-                }
-            )
+            ToolbarApp(navigateToFavScreen)
         },
         content = { paddingValues ->
 
@@ -233,6 +219,7 @@ fun ProductList(
         Column(modifier = modifier) {
             TextField(
                 modifier = Modifier
+                    .testTag(TEST_SEARCHER)
                     .fillMaxWidth()
                     .padding(8.dp),
                 value = query,
@@ -259,14 +246,14 @@ fun ProductList(
                 }
             )
 
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            LazyColumn(modifier = Modifier.fillMaxWidth().testTag(TEST_CITY_LIST)) {
                 val filterCities = filterListByName(dataCities.cities, query)
                 if (filterCities.isEmpty()) {
                     item {
                         ErrorCard(Constants.ApiError.EMPTY_CITIES.error, Modifier.fillMaxWidth())
                     }
                 } else {
-                    itemsIndexed(filterCities) { index, city ->
+                    itemsIndexed(filterCities) { _, city ->
                         ConstraintLayout(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -316,4 +303,31 @@ fun ProductList(
             }
         }
     }
+}
+
+@Composable
+fun ToolbarApp(navigateToFavScreen: () -> Unit){
+    TopAppBar(
+        title = {
+            Text(
+                stringResource(R.string.app_name),
+                color = Color.White,
+                modifier = Modifier.testTag(TEST_APP_NAME)
+            )
+        },
+        backgroundColor = Color.Black,
+        actions = {
+            IconButton(
+                modifier = Modifier.testTag(TEST_ICON_FAV),
+                onClick = {
+                navigateToFavScreen()
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.ThumbUp,
+                    contentDescription = "Favorites",
+                    tint = Color.Blue
+                )
+            }
+        }
+    )
 }

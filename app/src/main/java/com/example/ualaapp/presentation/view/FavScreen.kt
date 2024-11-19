@@ -12,6 +12,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +23,8 @@ import androidx.constraintlayout.compose.Dimension
 import com.example.ualaapp.R
 import com.example.ualaapp.data.models.City
 import com.example.ualaapp.helpers.Constants
+import com.example.ualaapp.helpers.Constants.TEST_FAV_CITIES
+import com.example.ualaapp.helpers.Constants.TEST_FAV_CITIES_TITLE
 import com.example.ualaapp.presentation.viewmodel.FavViewModel
 
 /**
@@ -49,7 +52,8 @@ fun FavScreen(
                 title = {
                     Text(
                         stringResource(R.string.fav_cities),
-                        color = Color.White
+                        Modifier.testTag(TEST_FAV_CITIES_TITLE),
+                        color = Color.White,
                     )
                 },  // Título del Toolbar
                 backgroundColor = Color.Black,
@@ -118,8 +122,8 @@ fun ProductList(
     navigateToMapScreen: (Long) -> Unit
 ) {
     if (!favCities.isNullOrEmpty()) {
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            itemsIndexed(favCities) { index, city ->
+        LazyColumn(modifier = Modifier.fillMaxWidth().testTag(TEST_FAV_CITIES)) {
+            itemsIndexed(favCities) { _, city ->
                 ConstraintLayout(
                     modifier = Modifier
                         .fillMaxSize()

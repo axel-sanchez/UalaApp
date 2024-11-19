@@ -11,6 +11,15 @@ object Constants {
     const val GET_CITIES = "cities.json"
     const val ID_CITY = "idCity"
 
+    //TEST TAGS
+    const val TEST_APP_NAME = "TEST_APP_NAME"
+    const val TEST_CITY_LIST = "TEST_CITY_LIST"
+    const val TEST_SEARCHER = "TEST_SEARCHER"
+    const val TEST_ICON_FAV = "TEST_ICON_FAV"
+    const val TEST_FAV_CITIES = "TEST_FAV_CITIES"
+    const val TEST_FAV_CITIES_TITLE = "TEST_FAV_CITIES_TITLE"
+    const val TEST_TAG_CITY_NAME = "TEST_TAG_CITY_NAME"
+
     enum class ApiError(var error: String) {
         GENERIC("Hubo un error al obtener las ciudades"),
         EMPTY_CITIES("No se obtuvo ninguna ciudad"),

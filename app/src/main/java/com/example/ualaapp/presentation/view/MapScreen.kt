@@ -12,7 +12,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import com.example.ualaapp.data.models.City
+import com.example.ualaapp.helpers.Constants.TEST_TAG_CITY_NAME
 import com.example.ualaapp.presentation.viewmodel.MapViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -31,18 +33,23 @@ fun MapScreen(idCity: Long, mapViewModel: MapViewModel, onBackPressed: () -> Uni
     val city: City by mapViewModel.getCityLiveData()
         .observeAsState(initial = City())
 
+    Map(city, mapViewModel, onBackPressed)
+
     DisposableEffect(city) {
         onDispose {
             mapViewModel.reset()
         }
     }
+}
 
-    if (city.coordinates?.lat != null && city.coordinates?.lon != null) {
-
+@Composable
+fun Map(city: City, mapViewModel: MapViewModel, onBackPressed: () -> Unit){
+    if (city.coordinates?.lat != null && city.coordinates.lon != null) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(city.name ?:"", color = Color.White) },  // Título del Toolbar
+                    title = { Text(city.name ?:"", color = Color.White,
+                        modifier = Modifier.testTag(TEST_TAG_CITY_NAME)) },  // Título del Toolbar
                     backgroundColor = Color.Black,
                     navigationIcon = {
                         IconButton(onClick = {
@@ -72,7 +79,7 @@ fun MapScreen(idCity: Long, mapViewModel: MapViewModel, onBackPressed: () -> Uni
             content = { paddingValues ->
                 // Mapa con la ubicación de la ciudad
                 val cameraPositionState = rememberCameraPositionState {
-                    position = CameraPosition.fromLatLngZoom(LatLng(city.coordinates?.lat?:0.0, city.coordinates?.lon?:0.0), 10f)
+                    position = CameraPosition.fromLatLngZoom(LatLng(city.coordinates.lat, city.coordinates.lon), 10f)
                 }
 
                 Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
@@ -82,7 +89,7 @@ fun MapScreen(idCity: Long, mapViewModel: MapViewModel, onBackPressed: () -> Uni
                         modifier = Modifier.fillMaxSize()
                     ) {
                         Marker(
-                            state = MarkerState(position = LatLng(city.coordinates?.lat?:0.0, city.coordinates?.lon?:0.0)),
+                            state = MarkerState(position = LatLng(city.coordinates.lat, city.coordinates.lon)),
                             title = city.name
                         )
                     }

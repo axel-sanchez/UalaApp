@@ -81,9 +81,10 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_ui_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
     implementation 'androidx.compose.material:material:1.2.0'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+    androidTestImplementation "androidx.compose.ui:ui-test:$compose_ui_version"
     kapt 'com.google.dagger:dagger-compiler:2.30.1'
     kapt 'com.google.dagger:dagger-compiler:2.15'
     kapt 'com.google.dagger:dagger-android-processor:2.15'
@@ -118,6 +119,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
 
     //Maps
     implementation 'com.google.maps.android:maps-compose:2.4.0' // Dependencia de mapas en Compose
