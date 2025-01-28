@@ -25,7 +25,7 @@ class FavViewModel(
     }
 
     fun getFavCities() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             setListData(getFavCitiesUseCase.call())
         }
     }

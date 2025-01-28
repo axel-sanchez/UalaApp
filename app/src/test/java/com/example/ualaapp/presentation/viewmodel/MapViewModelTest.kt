@@ -6,12 +6,13 @@ import com.example.ualaapp.data.models.City
 import com.example.ualaapp.data.repository.FakeRepository
 import com.example.ualaapp.domain.usecase.GetCityUseCase
 import com.example.ualaapp.domain.usecase.UpdateCityUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import org.hamcrest.Matchers
-import org.junit.Assert
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.mockito.Mockito
 
 class MapViewModelTest{
@@ -22,6 +23,11 @@ class MapViewModelTest{
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(Dispatchers.Unconfined)
+    }
 
     @Test
     fun should_update_livedata_with_city(){
@@ -41,5 +47,10 @@ class MapViewModelTest{
                 ViewMatchers.assertThat(city, Matchers.equalTo(repo.city1))
             }?: kotlin.run { Assert.fail("El Live Data no pudo ser actualizado con su nuevo valor") }
         }
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 }

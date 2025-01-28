@@ -37,7 +37,7 @@ class CityRemoteSourceImpl @Inject constructor(private val service: ApiServiceCi
                 Log.i("Successful Response", response.body().toString())
 
                 response.body()?.let { result ->
-                    mutableLiveData.value = DataCities(cities = sortAlphabetically(result))
+                    mutableLiveData.value = DataCities(cities = sortAlphabetically(result))//.take(1000)))
                 } ?: kotlin.run {
                     mutableLiveData.value = DataCities(apiError = GENERIC)
                 }

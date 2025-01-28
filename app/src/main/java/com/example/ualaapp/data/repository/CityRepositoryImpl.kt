@@ -6,6 +6,9 @@ import com.example.ualaapp.data.source.local.CityLocalSource
 import com.example.ualaapp.data.source.remote.CityRemoteSource
 import com.example.ualaapp.domain.repository.CityRepository
 import com.example.ualaapp.helpers.Constants.ApiError.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import okhttp3.Dispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,7 +19,7 @@ import javax.inject.Singleton
 class CityRepositoryImpl @Inject constructor(
     private val cityRemoteSource: CityRemoteSource,
     private val cityLocalSource: CityLocalSource
-): CityRepository {
+) : CityRepository {
 
     override suspend fun getCities(): DataCities {
         val localCities = getLocalCities()
@@ -27,7 +30,9 @@ class CityRepositoryImpl @Inject constructor(
         val remoteDataCities = getRemoteCities()
 
         if (!remoteDataCities.cities.isNullOrEmpty()) {
-            addCitiesInDB(remoteDataCities.cities)
+            runBlocking(Dispatchers.IO) {
+                addCitiesInDB(remoteDataCities.cities)
+            }
         }
 
         return remoteDataCities
@@ -54,8 +59,6 @@ class CityRepositoryImpl @Inject constructor(
     }
 
     private suspend fun addCitiesInDB(cities: List<City>) {
-        cities.forEach { city ->
-            cityLocalSource.insertCity(city)
-        }
+        cityLocalSource.insertCities(cities)
     }
 }

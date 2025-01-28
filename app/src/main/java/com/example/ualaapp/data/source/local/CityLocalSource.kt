@@ -15,6 +15,7 @@ interface CityLocalSource {
     suspend fun getCity(idCity: Long): City
     suspend fun insertCity(city: City)
     suspend fun updateCity(city: City)
+    suspend fun insertCities(cities: List<City>)
 }
 
 @Singleton
@@ -35,6 +36,10 @@ class CityLocalSourceImpl @Inject constructor(private val database: CityDao):
 
     override suspend fun insertCity(city: City) {
         database.insertCity(city)
+    }
+
+    override suspend fun insertCities(cities: List<City>) {
+        database.insertCities(cities)
     }
 
     override suspend fun updateCity(city: City) {

@@ -21,6 +21,9 @@ interface CityDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCity(city: City): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCities(cities: List<City>)
+
     @Update
     suspend fun updateCity(city: City)
 }

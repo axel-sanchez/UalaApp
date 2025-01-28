@@ -24,10 +24,18 @@ class CitiesViewModel(
     }
 
     fun getCities() {
-        viewModelScope.launch(Dispatchers.IO) {
-            setListData(getAllCitiesUseCase.call())
+        viewModelScope.launch(Dispatchers.Main) {
+            val allCities = getAllCitiesUseCase.call()
+            setListData(allCities)
+            //addToDataBase(allCities)
         }
     }
+
+    /*private fun addToDataBase(allCities: DataCities) {
+        viewModelScope.launch(){
+
+        }
+    }*/
 
     fun getCitiesLiveData(): LiveData<DataCities> {
         return listData

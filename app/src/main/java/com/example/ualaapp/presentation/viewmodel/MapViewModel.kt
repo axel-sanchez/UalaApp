@@ -22,7 +22,7 @@ class MapViewModel(
     }
 
     fun getCity(idCity: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             setListData(getCityUseCase.call(idCity))
         }
     }
