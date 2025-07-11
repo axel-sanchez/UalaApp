@@ -59,9 +59,6 @@ dependencies {
     def room_version = "2.6.1"
     def espresso_version = "3.6.1"
 
-    // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-
     // Core
     implementation 'androidx.core:core-ktx:1.16.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
