@@ -27,15 +27,8 @@ class CitiesViewModel(
         viewModelScope.launch(Dispatchers.Main) {
             val allCities = getAllCitiesUseCase.call()
             setListData(allCities)
-            //addToDataBase(allCities)
         }
     }
-
-    /*private fun addToDataBase(allCities: DataCities) {
-        viewModelScope.launch(){
-
-        }
-    }*/
 
     fun getCitiesLiveData(): LiveData<DataCities> {
         return listData

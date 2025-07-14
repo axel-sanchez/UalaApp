@@ -38,8 +38,10 @@ class CityRepositoryImpl @Inject constructor(
         return remoteDataCities
     }
 
-    override suspend fun getFavCities(): List<City> {
-        return cityLocalSource.getFavCities()
+    override suspend fun getFavCities(): DataCities {
+        val favCities = cityLocalSource.getFavCities()
+        return if (favCities.isNotEmpty()) DataCities(cities = favCities)
+        else DataCities(apiError = EMPTY_CITIES)
     }
 
     override suspend fun getCity(idCity: Long): City {

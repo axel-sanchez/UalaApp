@@ -23,8 +23,8 @@ class FakeRepository: CityRepository {
         return DataCities(cities = citiesList)
     }
 
-    override suspend fun getFavCities(): List<City> {
-        return listOf(city1, city2)
+    override suspend fun getFavCities(): DataCities {
+        return DataCities(cities = listOf(city1, city2))
     }
 
     override suspend fun getCity(idCity: Long): City {

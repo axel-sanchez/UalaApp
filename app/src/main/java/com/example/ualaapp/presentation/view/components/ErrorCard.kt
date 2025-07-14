@@ -1,4 +1,4 @@
-package com.example.ualaapp.presentation.view
+package com.example.ualaapp.presentation.view.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
