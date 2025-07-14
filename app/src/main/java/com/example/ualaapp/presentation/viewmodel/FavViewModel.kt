@@ -1,7 +1,7 @@
 package com.example.ualaapp.presentation.viewmodel
 
 import androidx.lifecycle.*
-import com.example.ualaapp.data.models.City
+import com.example.ualaapp.data.models.DataCities
 import com.example.ualaapp.domain.usecase.GetFavCitiesUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,15 +13,15 @@ class FavViewModel(
     private val getFavCitiesUseCase: GetFavCitiesUseCase
 ) : ViewModel() {
 
-    private var listData: MutableLiveData<List<City>> =
-        MutableLiveData<List<City>>()
+    private var listData: MutableLiveData<DataCities> =
+        MutableLiveData<DataCities>()
 
-    private fun setListData(result: List<City>) {
+    private fun setListData(result: DataCities) {
         listData.postValue(result)
     }
 
     fun reset() {
-        listData = MutableLiveData<List<City>>()
+        listData = MutableLiveData<DataCities>()
     }
 
     fun getFavCities() {
@@ -30,7 +30,7 @@ class FavViewModel(
         }
     }
 
-    fun getFavCitiesLiveData(): LiveData<List<City>> {
+    fun getFavCitiesLiveData(): LiveData<DataCities> {
         return listData
     }
 
